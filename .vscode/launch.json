@@ -1,0 +1,11 @@
+{
+    "configurations": [
+    {
+        "type": "java",
+        "name": "Launch Java Program",
+        "request": "launch",
+        "mainClass": "Gusteau",
+        "args": "demos/anyone_can_cook.chef"
+    }
+    ]
+}

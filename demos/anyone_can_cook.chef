@@ -1,0 +1,67 @@
+﻿Anyone Can Cook!
+Chef Compiler/visualizer: https://esolangpark.vercel.app/ide/chef
+Chef functions and program structure: http://progopedia.com/language/chef/
+
+
+Variables are represented using ingredients. 
+
+
+Hello World:
+
+
+Hello World Potstickers.
+
+
+P: 80
+O: 79
+T: 84
+S: 83
+I: 73
+C: 67
+K: 75
+E: 69
+R: 82
+Y: 89
+U: 85 
+M: 77
+This recipe prints the immortal words "Hello world!", in a basically
+brute force way. It also makes a lot of food for one person.
+
+
+Ingredients.
+80 g pork
+79 onions 
+84 g turmeric
+83 g salt 
+73 ml ginger
+67 chestnuts 
+75 karrots
+69 eggs
+82 rappers wonton
+89 yellow peppers
+85 uranium 
+77 g meat
+32 ml water
+
+
+Method.
+Put meat into the mixing bowl.
+Put uranium into the mixing bowl.
+Put yellow peppers into the mixing bowl.
+Put water into the mixing bowl.
+Put salt into the mixing bowl.
+Put rappers wonton into the mixing bowl.
+Put eggs into the mixing bowl.
+Put karrots into the mixing bowl.
+Put chestnuts into the mixing bowl.
+Put ginger into the mixing bowl.
+Put turmeric into the mixing bowl.
+Put salt into the mixing bowl.
+Put turmeric into the mixing bowl.
+Put onions into the mixing bowl.
+Put pork into the mixing bowl.
+Liquefy contents of the mixing bowl.
+Pour contents of the mixing bowl into the baking dish.
+
+
+Serves 1.
