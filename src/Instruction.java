@@ -6,7 +6,7 @@ public class Instruction {
 
     public String toString() {
         return "Instruction of type " + type.name() +
-               " on line " + this.line + "\n:\n" +
+               " on line " + this.line + ":\n" +
                "\"" + this.lexeme + "\"";
     }
 }

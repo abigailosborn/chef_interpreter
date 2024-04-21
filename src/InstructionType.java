@@ -17,6 +17,7 @@ public enum InstructionType {
     LOOP,
     LOOP_UNTIL,
     SET_ASIDE,
+    SERVES,
     SERVE_WITH,
     REFRIGERATE
 }

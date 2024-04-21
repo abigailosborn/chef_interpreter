@@ -4,12 +4,16 @@ import java.util.Stack;
 
 public class Interpreter {
     Recipe recipe;
-    HashMap<String, Object> variables;
-    ArrayList<Stack<Object>> bowl;
+    HashMap<String, Integer> ingredients;
+    ArrayList<Stack<Integer>> bowl;
 
     public Interpreter(Recipe recipe) {
         this.recipe = recipe;
-        this.variables = new HashMap<>();
+
+        this.ingredients = new HashMap<>();
+        for (Ingredient i : recipe.ingredients)
+            this.ingredients.put(i.name, i.inital_value);
+
         this.bowl = new ArrayList<>();
     }
 
