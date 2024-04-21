@@ -19,5 +19,7 @@ public enum InstructionType {
     SET_ASIDE,
     SERVES,
     SERVE_WITH,
-    REFRIGERATE
+    REFRIGERATE,
+    VERB,
+    UNTIL_VERBED
 }

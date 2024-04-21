@@ -13,7 +13,7 @@ public class Parser {
         this.current_line = 0;
     }
 
-    public String get_ingredient_name(String[] words){
+    private String get_ingredient_name(String[] words){
         String ingredient_name = "";
         for (int j = 1; j < words.length && !ex_words.contains(words[j]); j++) {
             ingredient_name += words[j];
@@ -23,6 +23,16 @@ public class Parser {
         }
         return ingredient_name;
     }
+
+    /* `base_offset` is the number of words that come before the mixing
+    bowl number, besides the number of words in the ingredient name */
+    private Integer get_mixing_bowl_number(String[] words, String ingredient_name, int base_offset) {
+        int spaces = ingredient_name.split(" ").length;
+        return is_number(words[base_offset + spaces])
+               ? Integer.parseInt(words[base_offset + spaces])
+               : 0;
+    }
+
     private boolean is_number(String word){
         try{
             Integer.parseInt(word);
@@ -60,97 +70,200 @@ public class Parser {
                     break;
                 }
                 case "Put": { 
-                    Integer mixing_bowl_num = 0;
+                    ArrayList<Object> values = new ArrayList<>();
                     String ingredient = get_ingredient_name(words);
-                    int spaces = ingredient.split(" ").length;
-                    if(is_number(words[2 + spaces])){
-                        mixing_bowl_num = Integer.parseInt(words[2 + spaces]);
-                    }
-                    else{
-                        mixing_bowl_num = 0;
-                    }
+                    Integer mixing_bowl_num = get_mixing_bowl_number(words, ingredient, 2);
+
                     values.add(ingredient);
                     values.add(mixing_bowl_num);
                     instruction.values = values.toArray(new Object[0]);
                     instruction.type = InstructionType.PUT_INTO_BOWL;
                     break;
                 }
-                case "Fold": { 
+                case "Fold": {
+                    ArrayList<Object> values = new ArrayList<>();
+                    String ingredient = get_ingredient_name(words);
+                    Integer mixing_bowl_num = get_mixing_bowl_number(words, ingredient, 2);
+
+                    values.add(ingredient);
+                    values.add(mixing_bowl_num);
+                    instruction.values = values.toArray(new Object[0]);
                     instruction.type = InstructionType.FOLD_INTO_BOWL;
                     break;
                 }
                 //there's two add functions 
                 case "Add": { 
                     if(words[1].equals("dry")){
-                        instruction.type = InstructionType.ADD_INTO_BOWL;
+                        ArrayList<Object> values = new ArrayList<>();
+                        if (words.length > 3) {
+                            values.add(Integer.parseInt(words[4]));
+                            instruction.values = values.toArray(new Object[0]);
+                        }
+                        instruction.type = InstructionType.ADD_DRY_INGREDIENTS;
                     }
                     else{
-                        instruction.type = InstructionType.ADD_DRY_INGREDIENTS;
+                        String ingredient = get_ingredient_name(words);
+                        Integer mixing_bowl_num = get_mixing_bowl_number(words, ingredient, 2);
+
+                        values.add(ingredient);
+                        values.add(mixing_bowl_num);
+                        instruction.values = values.toArray(new Object[0]);
+                        instruction.type = InstructionType.ADD_INTO_BOWL;
                     }
                     break;
                 }
-                case "Remove": { 
+                case "Remove": {
+                    ArrayList<Object> values = new ArrayList<>();
+                    String ingredient = get_ingredient_name(words);
+                    Integer mixing_bowl_num = get_mixing_bowl_number(words, ingredient, 2);
+                    
+                    values.add(ingredient);
+                    values.add(mixing_bowl_num);
+                    instruction.values = values.toArray(new Object[0]);
                     instruction.type = InstructionType.REMOVE_FROM_BOWL;
                     break;
                 }
-                case "Combine": { 
+                case "Combine": {
+                    ArrayList<Object> values = new ArrayList<>();
+                    String ingredient = get_ingredient_name(words);
+                    Integer mixing_bowl_num = get_mixing_bowl_number(words, ingredient, 2);
+                    
+                    values.add(ingredient);
+                    values.add(mixing_bowl_num);
+                    instruction.values = values.toArray(new Object[0]);
                     instruction.type = InstructionType.COMBINE;
                     break;
                 }
-                case "Divide": { 
+                case "Divide": {
+                    ArrayList<Object> values = new ArrayList<>();
+                    String ingredient = get_ingredient_name(words);
+                    Integer mixing_bowl_num = get_mixing_bowl_number(words, ingredient, 2);
+                    
+                    values.add(ingredient);
+                    values.add(mixing_bowl_num);
+                    instruction.values = values.toArray(new Object[0]);
                     instruction.type = InstructionType.DIVIDE;
                     break;
                 }
                 //Two of these too
-                case "Liquefy": { 
+                case "Liquefy": {
+                    ArrayList<Object> values = new ArrayList<>();
                     if(words[1].equals("contents")){
+                        Integer mixing_bowl_num = is_number(words[4]) ? Integer.parseInt(words[4]) : 0;
+                        values.add(mixing_bowl_num);
+                        instruction.values = values.toArray(new Integer[0]);
                         instruction.type = InstructionType.LIQUEFY_CONTENTS_OF_BOWL;
                     }
                     else{
+                        // TODO: yeah... error handling
+                        values.add(words[1]);
+                        instruction.values = values.toArray(new Object[0]);
                         instruction.type = InstructionType.LIQUEFY;
                     }
                     break;
                 }
                 //Once again two 
-                case "Stir": { 
-                    if(is_number(words[1])){
-                        instruction.type = InstructionType.STIR_FOR_N_MINS;
+                case "Stir": {
+                    ArrayList<Object> values = new ArrayList<>();
+                    if(is_number(words[2])){
+                        Integer mixing_bowl_num = get_mixing_bowl_number(words, "", 2);   
+                        int number_offset = words[2].equals("mixing") ? 6 : 5;
+                        Integer num_minutes = Integer.parseInt(words[number_offset]);
+                        values.add(mixing_bowl_num);
+                        values.add(num_minutes);
                     }
                     else{
+                        String ingredient = get_ingredient_name(words);
+                        Integer mixing_bowl_num = get_mixing_bowl_number(words, ingredient, 3);   
+                        values.add(mixing_bowl_num);
                         instruction.type = InstructionType.STIR_INTO_BOWL;
                     }
+                    instruction.values = values.toArray(new Integer[0]);
                     break;
                 }
-                case "Mix": { 
+                case "Mix": {
+                    ArrayList<Object> values = new ArrayList<>();
+                    Integer mixing_bowl_num = is_number(words[1]) ? Integer.parseInt(words[1]) : 0;
+
+                    values.add(mixing_bowl_num);
+                    instruction.values = values.toArray(new Object[0]);
                     instruction.type = InstructionType.MIX_WELL;
                     break;
                 }
-                case "Clean": { 
+                case "Clean": {
+                    ArrayList<Object> values = new ArrayList<>();
+                    Integer mixing_bowl_num = is_number(words[1]) ? Integer.parseInt(words[1]) : 0;
+
+                    values.add(mixing_bowl_num);
+                    instruction.values = values.toArray(new Object[0]);
                     instruction.type = InstructionType.CLEAN_BOWL;
                     break;
                 }
-                case "Pour": { 
+                case "Pour": {
+                    ArrayList<Integer> values = new ArrayList<>();
+                    Integer mixing_bowl_num = is_number(words[1]) ? Integer.parseInt(words[1]) : 0;
+                    Integer baking_dish_num = 0;
+                    int baking_dish_num_offset = mixing_bowl_num == 0 ? 8 : 9;
+                    if (is_number(words[baking_dish_num_offset]))
+                    baking_dish_num = Integer.parseInt(words[8]);
+                    
+                    values.add(mixing_bowl_num);
+                    values.add(baking_dish_num);
+                    instruction.values = values.toArray(new Integer[0]);
                     instruction.type = InstructionType.POUR_BOWL_INTO_DISH;
                     break;
                 }
-                case "Set": { 
+                case "Set": {
                     instruction.type = InstructionType.SET_ASIDE; 
                     break;
                 }
-                case "Serve": { 
+                case "Serve": {
+                    ArrayList<String> values = new ArrayList<>();
+                    String auxiliary_recipe = words[2];
+
+                    values.add(auxiliary_recipe);
+                    instruction.values = values.toArray(new String[0]);
                     instruction.type = InstructionType.SERVE_WITH;
                     break;
                 }
-                case "Serves": { 
+                case "Serves": {
                     instruction.type = InstructionType.SERVES;
                     break;
                 }
-                case "Refrigerate": { 
+                case "Refrigerate": {
+                    if (words.length > 1) {
+                        ArrayList<Integer> values = new ArrayList<>();
+                        Integer num_hours = Integer.parseInt(words[2]);
+
+                        values.add(num_hours);
+                        instruction.values = values.toArray(new Integer[0]);
+                    }
                     instruction.type = InstructionType.REFRIGERATE;
                     break;
                 }
-                //Any verb I guess, idk 
-                // TODO: the rest!
+                // Handle loops
+                default: {
+                    ArrayList<String> values = new ArrayList<>();
+                    boolean is_loop_end = Arrays.asList(words).contains("until");
+                    if (words[1].equals("the")) {
+                        String verb = words[0];
+                        values.add(verb);
+
+                        if (is_loop_end && words.length == 3) {
+                            String verbed = words[words.length - 1];
+                            values.add(verbed);
+                        }
+                        else {
+                            String ingredient = words[2];
+                            values.add(ingredient);
+                        }
+                    }
+
+                    instruction.values = values.toArray(new String[0]);
+                    instruction.type = is_loop_end
+                                       ? InstructionType.UNTIL_VERBED
+                                       : InstructionType.VERB;
+                }
             }
             instructions.add(instruction);
         }
